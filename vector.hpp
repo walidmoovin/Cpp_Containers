@@ -1,16 +1,9 @@
 #pragma once
-#include <iostream>
-#include <memory>
-#include "type_traits.hpp"
-#include "vector_iterators.hpp"
-/* 
-	- RANDOM ACCESS ITERATOR (ITERATOR THAT PROVIDES BOTH INCREMENT AND DECREMENT BUT ALSO METHODS
-	FOR MOVING FORWARD AND BACKWARD BY A SPECIFIED AMOUNT)
-	- VECTOR (CONTAINER THAT STORES ELEMENTS IN A DYNAMICAL ARRAY AND ALLOWS FOR FAST RANDOM ACCESS)
-*/
+
 namespace ft
 {
 	// ====================  VECTOR  ====================
+	// Vector is a container that stores elements in a dynamic array and allows for fast random access.
 	template <class T, class Alloc = std::allocator<T> >
 	class vector
 	{
