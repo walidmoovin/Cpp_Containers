@@ -1,4 +1,8 @@
+#ifndef VECTOR_HPP
+#define VECTOR_HPP
+
 #pragma once
+#include "VectorIterator.hpp"
 
 namespace ft
 {
@@ -17,8 +21,8 @@ namespace ft
 			typedef const T *const_pointer;
 			typedef size_t size_type;
 			typedef ptrdiff_t difference_type;
-			typedef ft::random_access_iterator<T> iterator;
-			typedef ft::const_random_access_iterator<T> const_iterator;
+			typedef ft::VectorIterator<T, false> iterator;
+			typedef ft::VectorIterator<T, true> const_iterator;
 			// typedef std::reverse_iterator<iterator> reverse_iterator;
 			// typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -402,3 +406,5 @@ namespace ft
 		x.swap(y);
 	};
 }
+
+#endif

@@ -1,6 +1,8 @@
 #ifndef CHOOSE_HPP
 #define CHOOSE_HPP
 
+#pragma once
+
 namespace ft
 {
 	template <bool Flag, class IsTrue, class IsFalse>

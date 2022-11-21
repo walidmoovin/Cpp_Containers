@@ -1,6 +1,9 @@
 #ifndef IS_INTEGRAL_HPP
 #define IS_INTEGRAL_HPP
 
+#pragma once
+#include "EnableIf.hpp"
+
 namespace ft
 {
 	template <class T, T v>

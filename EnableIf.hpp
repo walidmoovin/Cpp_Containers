@@ -1,6 +1,8 @@
 #ifndef ENABLE_IF_HPP
 #define ENABLE_IF_HPP
 
+#pragma once
+
 namespace ft
 {
 	// Cond is false, no typedef.

@@ -1,9 +1,8 @@
 #ifndef CHAD_ITERATOR_HPP
 #define CHAD_ITERATOR_HPP
 
-#include <iostream>
+#pragma once
 #include <cstddef> // Standard library header for ptrdiff_t and size_t
-#include "EnableIf.hpp"
 
 namespace ft
 {

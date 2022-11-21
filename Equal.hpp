@@ -1,6 +1,8 @@
 #ifndef EQUAL_HPP
 #define EQUAL_HPP
 
+#pragma once
+
 namespace ft
 {
 	template <class InputIterator1, class InputIterator2>
