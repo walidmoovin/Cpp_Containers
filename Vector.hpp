@@ -3,6 +3,7 @@
 
 #pragma once
 #include "VectorIterator.hpp"
+#include "ReverseIterator.hpp"
 
 namespace ft
 {
@@ -23,8 +24,8 @@ namespace ft
 			typedef ptrdiff_t difference_type;
 			typedef ft::VectorIterator<T, false> iterator;
 			typedef ft::VectorIterator<T, true> const_iterator;
-			// typedef std::reverse_iterator<iterator> reverse_iterator;
-			// typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+			typedef ft::ReverseIterator<iterator> reverse_iterator;
+			typedef ft::ReverseIterator<const_iterator> const_reverse_iterator;
 
 			// ====================  CONSTRUCTORS  ====================
 			// EMPTY CONSTRUCTOR
@@ -91,11 +92,11 @@ namespace ft
 			iterator end() { return iterator(_data + _size); };
 			const_iterator end() const { return const_iterator(_data + _size); };
 
-			// reverse_iterator rbegin() { return reverse_iterator(_data + _size - 1); };
-			// const_reverse_iterator rbegin() const { return const_reverse_iterator(_data + _size - 1); };
+			reverse_iterator rbegin() { return reverse_iterator(_data + _size); };
+			const_reverse_iterator rbegin() const { return const_reverse_iterator(_data + _size); };
 
-			// reverse_iterator rend() { return reverse_iterator(_data - 1); };
-			// const_reverse_iterator rend() const { return const_reverse_iterator(_data - 1); };
+			reverse_iterator rend() { return reverse_iterator(_data); };
+			const_reverse_iterator rend() const { return const_reverse_iterator(_data); };
 
 			// ====================  CAPACITY  ====================
 			// REQUEST A CHANGE IN CAPACITY
