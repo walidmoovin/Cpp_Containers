@@ -65,24 +65,24 @@ namespace ft
 				return *this;
 			}
 			// enhanced addition
-			VectorIterator<T, isConst>& operator+=(std::size_t n)
+			VectorIterator<T, isConst>& operator+=(typename it::difference_type n)
 			{
 				this->_ptr += n;
 				return *this;
 			}
 			// enhanced subtraction
-			VectorIterator<T, isConst>& operator-=(std::size_t n)
+			VectorIterator<T, isConst>& operator-=(typename it::difference_type n)
 			{
 				this->_ptr -= n;
 				return *this;
 			}
 			// addition
-			VectorIterator<T, isConst> operator+(std::size_t n) const
+			VectorIterator<T, isConst> operator+(typename it::difference_type n) const
 			{
 				return VectorIterator<T, isConst>(this->_ptr + n);
 			}
 			// subtraction
-			VectorIterator<T, isConst> operator-(std::size_t n) const
+			VectorIterator<T, isConst> operator-(typename it::difference_type n) const
 			{
 				return VectorIterator<T, isConst>(this->_ptr - n);
 			}
@@ -97,12 +97,12 @@ namespace ft
 				return this->_ptr;
 			}
 			// A[n]
-			typename it::reference operator[](std::size_t n) const
+			typename it::reference operator[](typename it::difference_type n) const
 			{
 				return *(this->_ptr + n);
 			}
 			// - (difference) between two iterators
-			std::size_t operator-(const VectorIterator<T, isConst>& other) const
+			typename it::difference_type operator-(const VectorIterator<T, isConst>& other) const
 			{
 				return (this->_ptr - other._ptr);
 			}
@@ -110,6 +110,9 @@ namespace ft
 			// addition operator
 			template <typename Y, bool isConstFriend>
 			friend VectorIterator<Y, isConstFriend> operator+(std::size_t n, const VectorIterator<Y, isConstFriend>& other);
+			// subtraction operator
+			template <class Iterator, class OtherIterator>
+			friend typename OtherIterator::difference_type operator-(const Iterator& lhs, const OtherIterator& rhs);
 			// inequality operator
 			template <typename Y, bool isConstFriend, bool isConstFriend2>
 			friend bool operator!=(const VectorIterator<Y, isConstFriend>& other, const VectorIterator<Y, isConstFriend2>& other2);
@@ -133,6 +136,11 @@ namespace ft
 	VectorIterator<Y, isConstFriend> operator+(std::size_t n, const VectorIterator<Y, isConstFriend>& other)
 	{
 		return VectorIterator<Y, isConstFriend>(other._ptr + n);
+	}
+	template <class Iterator, class OtherIterator>
+	typename OtherIterator::difference_type operator-(const Iterator& lhs, const OtherIterator& rhs)
+	{
+		return (lhs._ptr - rhs._ptr);
 	}
 	template <typename Y, bool isConstFriend, bool isConstFriend2>
 	bool operator!=(const VectorIterator<Y, isConstFriend>& other, const VectorIterator<Y, isConstFriend2>& other2)

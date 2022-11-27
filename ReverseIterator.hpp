@@ -16,6 +16,7 @@ namespace ft
 		private:
 			Iterator _it;
 		public:
+			typedef typename ft::iterator_traits<Iterator>::difference_type difference_type;
 			typedef typename ft::iterator_traits<Iterator>::pointer pointer;
 			typedef typename ft::iterator_traits<Iterator>::reference reference;
 			// ==================== CONSTRUCTORS ====================
@@ -52,8 +53,8 @@ namespace ft
 			{
 				return &(this->operator*());
 			}
-			// [] operator overload (returns reference to element at index n)
- 			reference operator[](std::size_t n) const
+			// returns reference to element at index n
+ 			reference operator[](difference_type n) const
 			{
 				return *(*this + n);
 			}
@@ -87,26 +88,26 @@ namespace ft
 			}
 
 			// enhanced addition
-			ReverseIterator& operator+=(std::size_t n)
+			ReverseIterator& operator+=(difference_type n)
 			{
 				this->_it -= n;
 				return *this;
 			}
 			// enhanced subtraction
-			ReverseIterator& operator-=(std::size_t n)
+			ReverseIterator& operator-=(difference_type n)
 			{
 				this->_it += n;
 				return *this;
 			}
 
 			// addition
-			ReverseIterator operator+(std::size_t n) const
+			ReverseIterator operator+(difference_type n) const
 			{
 				ReverseIterator tmp(*this);
 				return tmp += n;
 			}
 			// subtraction
-			ReverseIterator operator-(std::size_t n) const
+			ReverseIterator operator-(difference_type n) const
 			{
 				ReverseIterator tmp(*this);
 				return tmp -= n;
@@ -114,21 +115,21 @@ namespace ft
 	};
 	// addition operator
 	template <class Iterator>
-	std::size_t operator+(std::size_t n, const ReverseIterator<Iterator>& rhs)
+	ReverseIterator<Iterator> operator+(typename ReverseIterator<Iterator>::difference_type n, const ReverseIterator<Iterator>& other)
 	{
-		return rhs.base() - n;
+		return (other + n);
 	}
 	// subtraction operator
-	template <class Iterator, class OtherIterator>
-	std::size_t operator-(std::size_t n, const ReverseIterator<OtherIterator>& rhs)
+	template<class Iterator>
+ 	typename ReverseIterator<Iterator>::difference_type operator-(const ReverseIterator<Iterator>& lhs, const ReverseIterator<Iterator>& rhs)
 	{
-		return rhs.base() + n;
+		return (rhs.base() - lhs.base());
 	}
 	// subtraction operator, but allowing mix of reverse and non-reverse iterators
 	template <class Iterator, class OtherIterator>
-	std::size_t operator-(const ReverseIterator<Iterator>& lhs, const ReverseIterator<OtherIterator>& rhs)
+	typename ReverseIterator<Iterator>::difference_type operator-(const ReverseIterator<Iterator>& lhs, const ReverseIterator<OtherIterator>& rhs)
 	{
-		return lhs.base() - rhs.base();
+		return rhs.base() - lhs.base();
 	} 
 	// equality operator
 	template <class Iterator, class OtherIterator>
