@@ -16,72 +16,67 @@ namespace ft
 			T* _ptr;
 			typedef typename ft::iterator<ft::random_access_iterator_tag, typename ft::choose<isConst, const T, T>::type> it;																														
 		public:
-			// ==================== CONSTRUCTORS ====================
+			// ==================== Constructors ====================
 			VectorIterator(T* ptr) : _ptr(ptr) {}
 			VectorIterator() : _ptr(NULL) {}
 			VectorIterator(const VectorIterator<T, isConst>& other) : _ptr(other._ptr) {}
-
-			// ==================== DESTRUCTOR ====================
+			// ==================== Destructors ====================
 			~VectorIterator() {}
-
-			// ===================== CONVERSION NON-CONST TO CONST ====================
+			// ===================== Non-const -> const conversion ====================
 			operator VectorIterator<T, true>() const
 			{
 				return VectorIterator<T, true>(this->_ptr);
 			}
-
-			// ==================== ASSIGNMENT OPERATOR ====================
+			// ==================== (=) Operator ====================
 			VectorIterator<T, isConst>& operator=(const VectorIterator& other)
 			{
 				this->_ptr = other._ptr;
 				return *this;
 			}
-
-			// ==================== ARITHMETIC OPERATORS ====================
-			// post-increment
+			// Post-increment
 			VectorIterator<T, isConst> operator++(int)
 			{
 				VectorIterator<T, isConst> tmp(*this);
 				this->_ptr++;
 				return tmp;
 			}
-			// post-decrement
+			// Post-decrement
 			VectorIterator<T, isConst> operator--(int)
 			{
 				VectorIterator<T, isConst> tmp(*this);
 				this->_ptr--;
 				return tmp;
 			}
-			// pre-increment
+			// Pre-increment
 			VectorIterator<T, isConst>& operator++()
 			{
 				this->_ptr++;
 				return *this;
 			}
-			// pre-decrement
+			// Pre-decrement
 			VectorIterator<T, isConst>& operator--()
 			{
 				this->_ptr--;
 				return *this;
 			}
-			// enhanced addition
+			// Enhanced addition
 			VectorIterator<T, isConst>& operator+=(typename it::difference_type n)
 			{
 				this->_ptr += n;
 				return *this;
 			}
-			// enhanced subtraction
+			// Enhanced subtraction
 			VectorIterator<T, isConst>& operator-=(typename it::difference_type n)
 			{
 				this->_ptr -= n;
 				return *this;
 			}
-			// addition
+			// Addition
 			VectorIterator<T, isConst> operator+(typename it::difference_type n) const
 			{
 				return VectorIterator<T, isConst>(this->_ptr + n);
 			}
-			// subtraction
+			// Subtraction
 			VectorIterator<T, isConst> operator-(typename it::difference_type n) const
 			{
 				return VectorIterator<T, isConst>(this->_ptr - n);
@@ -101,34 +96,26 @@ namespace ft
 			{
 				return *(this->_ptr + n);
 			}
-			// - (difference) between two iterators
+			// Difference between two iterators
 			typename it::difference_type operator-(const VectorIterator<T, isConst>& other) const
 			{
 				return (this->_ptr - other._ptr);
 			}
-			// ==================== FRIEND OPERATORS (allow const and non-const in operators) (just prototype here, functions outside of the class) ====================
-			// addition operator
+			// ==================== Friend operators (allow const and non-const in operators) (just prototype here, functions outside of the class) ====================
 			template <typename Y, bool isConstFriend>
 			friend VectorIterator<Y, isConstFriend> operator+(std::size_t n, const VectorIterator<Y, isConstFriend>& other);
-			// subtraction operator
 			template <class Iterator, class OtherIterator>
 			friend typename OtherIterator::difference_type operator-(const Iterator& lhs, const OtherIterator& rhs);
-			// inequality operator
 			template <typename Y, bool isConstFriend, bool isConstFriend2>
 			friend bool operator!=(const VectorIterator<Y, isConstFriend>& other, const VectorIterator<Y, isConstFriend2>& other2);
-			// equality operator
 			template <typename Y, bool isConstFriend, bool isConstFriend2>
 			friend bool operator==(const VectorIterator<Y, isConstFriend>& other, const VectorIterator<Y, isConstFriend2>& other2);
-			// less than operator
 			template <typename Y, bool isConstFriend, bool isConstFriend2>
 			friend bool operator<(const VectorIterator<Y, isConstFriend>& other, const VectorIterator<Y, isConstFriend2>& other2);
-			// greater than operator
 			template <typename Y, bool isConstFriend, bool isConstFriend2>
 			friend bool operator>(const VectorIterator<Y, isConstFriend>& other, const VectorIterator<Y, isConstFriend2>& other2);
-			// less than or equal operator
 			template <typename Y, bool isConstFriend, bool isConstFriend2>
 			friend bool operator<=(const VectorIterator<Y, isConstFriend>& other, const VectorIterator<Y, isConstFriend2>& other2);
-			// greater than or equal operator
 			template <typename Y, bool isConstFriend, bool isConstFriend2>
 			friend bool operator>=(const VectorIterator<Y, isConstFriend>& other, const VectorIterator<Y, isConstFriend2>& other2);
 	};

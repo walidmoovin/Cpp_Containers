@@ -15,8 +15,7 @@ namespace ft
 		operator value_type() const { return value; }
 	};
 	
-	// are these fucking types integral ?
-	// false by default, true if T is integral
+	// Default = false, true if T is integral
 	template <class T>
 	struct is_integral : public integral_constant<bool, false> {};
 	template <>

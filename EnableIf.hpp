@@ -5,8 +5,7 @@
 
 namespace ft
 {
-	// Cond is false, no typedef.
-	// Cond is true, typedef T.
+	// Cond is false, no typedef. Otherwise, typedef T
 	template <bool Cond, class T = void>
 	struct enable_if {};
 	template <class T>

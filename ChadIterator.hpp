@@ -6,7 +6,7 @@
 
 namespace ft
 {
-	// ==================== ITERATOR_TAGS ====================
+	// ==================== Iterator_tags ====================
 	// Iterator tag functions are a method for accessing information that is associated with iterators.
 	struct input_iterator_tag { };
 	struct output_iterator_tag { };
@@ -14,7 +14,7 @@ namespace ft
 	struct bidirectional_iterator_tag : public forward_iterator_tag { };
 	struct random_access_iterator_tag : public bidirectional_iterator_tag { };
 
-	// ==================== ITERATOR_TRAITS ====================
+	// ==================== Iterator_traits ====================
 	template <class Iterator>
 	struct iterator_traits
 	{
@@ -44,8 +44,8 @@ namespace ft
 		typedef T&			reference;
 		typedef ft::random_access_iterator_tag	iterator_category;
 	};
-	// ==================== ITERATOR ====================
-	// chad original iterator template, the first and the only one
+	// ==================== Iterator ====================
+	// Chad of all iterators
 	template <class Category, class T, class Distance = std::ptrdiff_t, class Pointer = T*, class Reference = T&>
 	struct iterator
 	{

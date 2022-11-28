@@ -5,10 +5,14 @@
 #include "VectorIterator.hpp"
 #include "ReverseIterator.hpp"
 
+/* vector specificities:
+	- Sequence (ordered)
+	- Random access
+	- Allocator-aware
+*/
 namespace ft
 {
-	// ====================  VECTOR  ====================
-	// Vector is a container that stores elements in a dynamic array and allows for fast random access.
+	// ====================  Vector  ====================
 	template <class T, class Alloc = std::allocator<T> >
 	class vector
 	{
@@ -27,47 +31,40 @@ namespace ft
 			typedef ft::ReverseIterator<iterator> reverse_iterator;
 			typedef ft::ReverseIterator<const_iterator> const_reverse_iterator;
 
-			// ====================  CONSTRUCTORS  ====================
-			// EMPTY CONSTRUCTOR
+			// ====================  Constructors  ====================
+			// Empty
 			explicit vector(const allocator_type &alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(0), _data(NULL){};
-
-			// FILL CONSTRUCTOR
+			// Fill
 			explicit vector(size_t n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) : _alloc(alloc), _size(n), _capacity(n), _data(_alloc.allocate(n))
 			{
 				for (size_t i = 0; i < n; i++)
 					_alloc.construct(_data + i, val);
 			};
-
-			// RANGE CONSTRUCTOR
+			// Range
 			template <class InputIterator>
 			vector(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(0), _data(NULL)
 			{
 				assign(first, last);
 			};
-
-			// COPY CONSTRUCTOR
+			// Copy
 			vector(const vector &x) : _alloc(x._alloc), _size(x._size), _capacity(x._capacity), _data(_alloc.allocate(x._capacity))
 			{
 				for (size_t i = 0; i < x._size; i++)
 					_alloc.construct(_data + i, x._data[i]);
 			};
-
-			// ====================  DESTRUCTOR  ====================
+			// ====================  Destructors  ====================
 			~vector()
 			{
 				clear();
 				_alloc.deallocate(_data, _capacity);
 			};
-
-			// ====================  ACCESSORS  ====================
+			// ====================  Accessors  ====================
 			allocator_type get_allocator() const { return _alloc; };
 			size_t size() const { return _size; };
 			size_t max_size() const { return _alloc.max_size(); };
 			size_t capacity() const { return _capacity; };
 			bool empty() const { return _size == 0; };
-
-			// ====================  MUTATORS  ====================
-			// ASSIGNATION OPERATOR
+			// ==================== (=) Operator ====================
 			vector &operator=(const vector &x)
 			{
 				if (this != &x)
@@ -84,8 +81,7 @@ namespace ft
 				}
 				return *this;
 			};
-
-			// ====================  ITERATORS  ====================
+			// ====================  Iterators  ====================
 			iterator begin() { return iterator(_data); };
 			const_iterator begin() const { return const_iterator(_data); };
 
@@ -97,9 +93,8 @@ namespace ft
 
 			reverse_iterator rend() { return reverse_iterator(_data); };
 			const_reverse_iterator rend() const { return const_reverse_iterator(_data); };
-
-			// ====================  CAPACITY  ====================
-			// REQUEST A CHANGE IN CAPACITY
+			// ====================  Capacity  ====================
+			// Request a change in capacity
 			void reserve(size_t n)
 			{
 				if (n > _capacity)
@@ -114,8 +109,7 @@ namespace ft
 					_capacity = n;
 				}
 			};
-
-			// CONTAINER RESIZE
+			// Resize the container
 			void resize(size_t n, value_type val = value_type())
 			{
 				if (n > _capacity)
@@ -132,13 +126,11 @@ namespace ft
 				}
 				_size = n;
 			};
-
-			// ====================  ELEMENT ACCESS  ====================
-			// ACCESS ELEMENT, no check if out of range, undefined behavior. (faster)
+			// ====================  Element accerss  ====================
+			// no check if out of range, undefined behavior. (faster)
 			reference operator[](size_t n) { return _data[n]; };
 			const_reference operator[](size_t n) const { return _data[n]; };
-
-			// ACCESS ELEMENT, check if out of range, throw exception. (slower)
+			// check if out of range, throw exception. (slower)
 			reference at(size_t n)
 			{
 				if (n >= _size)
@@ -151,25 +143,21 @@ namespace ft
 					throw std::out_of_range("vector::at : index out of range");
 				return _data[n];
 			};
-
-			// ACCESS FIRST ELEMENT
+			// First element
 			reference front() { return _data[0]; };
 			const_reference front() const { return _data[0]; };
-
-			// ACCESS LAST ELEMENT
+			// Last element
 			reference back() { return _data[_size - 1]; };
 			const_reference back() const { return _data[_size - 1]; };
-
-			// ====================  MODIFIERS  ====================
-			// ASSIGN NEW CONTENTS (FILL) TO VECTOR
+			// ====================  Modifiers  ====================
+			// Assign content (fill)
 			void assign(size_t n, const value_type &val)
 			{
 				clear();
 				for (size_t i = 0; i < n; i++)
 					push_back(val);
 			};
-
-			// ASSIGN NEW CONTENTS (RANGE) TO VECTOR
+			// Assign content (range)
 			template <class InputIterator>
 			typename ft::enable_if<!ft::is_integral<InputIterator>::value, void>::type assign(InputIterator first, InputIterator last)
 			{
@@ -177,8 +165,7 @@ namespace ft
 				for (InputIterator it = first; it != last; it++)
 					push_back(*it);
 			};
-
-			// ADD ELEMENT AT THE END
+			// Add element at end
 			void push_back(const value_type &val)
 			{
 				if (_capacity == 0)
@@ -188,8 +175,7 @@ namespace ft
 				_alloc.construct(_data + _size, val);
 				_size++;
 			};
-
-			// REMOVE LAST ELEMENT
+			// Remove last element
 			void pop_back()
 			{
 				if (_size > 0)
@@ -198,16 +184,14 @@ namespace ft
 					_size--;
 				}
 			};
-
-			// REMOVE ALL ELEMENTS
+			// Remove all
 			void clear()
 			{
 				for (size_t i = 0; i < _size; i++)
 					_alloc.destroy(_data + i);
 				_size = 0;
 			};
-
-			// SWAP CONTENTS OF TWO vectorS
+			// Swap content
 			void swap(vector &x)
 			{
 				pointer tmp = _data;
@@ -223,8 +207,7 @@ namespace ft
 				_alloc = x._alloc;
 				x._alloc = tmp3;
 			};
-
-			// INSERT SINGLE ELEMENT
+			// Insert (1)
 			iterator insert(iterator position, const value_type &val)
 			{
 				size_t pos = position - begin();
@@ -238,8 +221,7 @@ namespace ft
 				_size++;
 				return iterator(_data + pos);
 			};
-
-			// INSERT FILL
+			// Insert (fill)
 			void insert(iterator position, size_t n, const value_type &val)
 			{
 				size_t pos = position - begin();
@@ -251,8 +233,7 @@ namespace ft
 					_alloc.construct(_data + i, val);
 				_size += n;
 			};
-
-			// INSERT RANGE
+			// Insert (range)
 			template <class InputIterator>
 			typename ft::enable_if<!ft::is_integral<InputIterator>::value, void>::type insert(iterator position, InputIterator first, InputIterator last)
 			{
@@ -271,8 +252,7 @@ namespace ft
 				}
 				_size += n;
 			};
-
-			// ERASE SINGLE ELEMENT
+			// Erase (1)
 			iterator erase(iterator position)
 			{
 				size_t pos = position - begin();
@@ -282,8 +262,7 @@ namespace ft
 				_size--;
 				return iterator(_data + pos);
 			};
-
-			// ERASE RANGE
+			// Erase (range)
 			iterator erase(iterator first, iterator last)
 			{
 				size_t pos = first - begin();
@@ -295,16 +274,13 @@ namespace ft
 				_size -= n;
 				return iterator(_data + pos);
 			};
-
 		private:
 			allocator_type _alloc;
 			size_t _size;
 			size_t _capacity;
 			value_type *_data;
 	};
-
-	// ====================  NON-MEMBER FUNCTIONS OVERLOADS  ====================
-	// RELATIONAL OPERATORS
+	// ==================== Relational operators ====================
 	template <class T, class Alloc>
 	bool operator==(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 	{
@@ -315,7 +291,6 @@ namespace ft
 				return false;
 		return true;
 	};
-
 	template <class T, class Alloc>
 	bool operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 	{
@@ -326,7 +301,6 @@ namespace ft
 				return true;
 		return false;
 	};
-
 	template <class T, class Alloc>
 	bool operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 	{
@@ -362,7 +336,6 @@ namespace ft
 			return true;
 		return false;
 	};
-
 	template <class T, class Alloc>
 	bool operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 	{
@@ -379,7 +352,6 @@ namespace ft
 			return true;
 		return false;
 	};
-
 	template <class T, class Alloc>
 	bool operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 	{
@@ -398,9 +370,7 @@ namespace ft
 			return true;
 		return false;
 	};
-
-	// ====================  SWAP ====================
-	// SWAP CONTENTS OF TWO VECTORS
+	// Swap
 	template <class T, class Alloc>
 	void swap(vector<T, Alloc> &x, vector<T, Alloc> &y)
 	{
