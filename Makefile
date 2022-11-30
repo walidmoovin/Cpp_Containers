@@ -2,12 +2,12 @@ NAME= ft_containers
 SRCS= main.cpp
 OBJS= $(SRCS:.cpp=.o)
 CXX=c++
-CXXFLAGS= -Werror -Wextra -Wall -std=c++98
+CXXFLAGS= -Werror -Wextra -Wall -std=c++98 
 
 all : $(NAME)
 
 $(NAME): $(OBJS)
-	$(CXX) $(OBJS) -o $(NAME)
+	$(CXX) -g -fsanitize=address $(OBJS) -o $(NAME)
 
 clean:
 	rm -rf $(OBJS)
