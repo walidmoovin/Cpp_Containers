@@ -10,6 +10,7 @@
 #include <memory>
 #include <iostream>
 #include <iomanip>
+#include "MapIterator.hpp"\
 
 /*
 	RedBlackTree specificities:
@@ -22,7 +23,6 @@
 	- 3 operations: insert, delete, search, time complexity: O(log n)
 	- rotation rearranges subtress -> changes structure -> decreases height -> increases performance (doesn't affect order), time complexity: O(1)
 */
-
 template <class T, class Compare = std::less<T>, class Allocator = std::allocator<T> >
 class RedBlackTree
 {
@@ -31,6 +31,8 @@ class RedBlackTree
 		typedef T value_type;
 		typedef Allocator allocator_type;
 		typedef Compare key_compare;
+		typedef ft::MapIterator<RedBlackTree<T, Compare, Allocator>, false> iterator;
+		typedef ft::MapIterator<RedBlackTree<T, Compare, Allocator>, true> const_iterator;
 		// ==================== RedBlackTree node structure ====================
 		struct rb_node
 		{
@@ -117,43 +119,44 @@ class RedBlackTree
 			{
 				std::cout << prefix;
 				std::cout << (isLeft ? "|--" : "L--");
-				std::cout << node->data << std::endl;
+				std::cout << node->data;
+				std::cout << (node->color == RED ? "R" : (node->color == BLACK ? "B" : "N")) << std::endl;
 				printBT(prefix + (isLeft ? "|   " : "    "), node->right, true);
 				printBT(prefix + (isLeft ? "|   " : "    "), node->left, false);
 			}
 		}
 		// ==================== RedBlackTree Rotations ====================
-		void rotate_right(rb_node* node)
+		void rotate_right(rb_node* X)
 		{
-			rb_node* newNode = node->left;
-			node->left = newNode->right;
-			if (newNode->right != NULL)
-				newNode->right->parent = node;
-			newNode->parent = node->parent;
-			if (node->parent == NULL)
-				this->_root = newNode;
-			else if (node == node->parent->right)
-				node->parent->right = newNode;
+			rb_node* Y = X->left;
+			X->left = Y->right;
+			if (Y->right != NULL)
+				Y->right->parent = X;
+			Y->parent = X->parent;
+			if (X->parent == NULL)
+				this->_root = Y;
+			else if (is_right_child(X))
+				X->parent->right = Y;
 			else
-				node->parent->left = newNode;
-			newNode->right = node;
-			node->parent = newNode;
+				X->parent->left = Y;
+			Y->right = X;
+			X->parent = Y;
 		}
-		void rotate_left(rb_node* node)
+		void rotate_left(rb_node* X)
 		{
-			rb_node* newNode = node->right;
-			node->right = newNode->left;
-			if (newNode->left != NULL)
-				newNode->left->parent = node;
-			newNode->parent = node->parent;
-			if (node->parent == NULL)
-				this->_root = newNode;
-			else if (node == node->parent->left)
-				node->parent->left = newNode;
+			rb_node* Y = X->right;
+			X->right = Y->left;
+			if (Y->left != NULL)
+				Y->left->parent = X;
+			Y->parent = X->parent;
+			if (X->parent == NULL)
+				this->_root = Y;
+			else if (is_left_child(X))
+				X->parent->left = Y;
 			else
-				node->parent->right = newNode;
-			newNode->left = node;
-			node->parent = newNode;
+				X->parent->right = Y;
+			Y->left = X;
+			X->parent = Y;
 		}
 		// ==================== Node family ====================
 		rb_node* parent(rb_node* node) const
@@ -285,6 +288,78 @@ class RedBlackTree
 				4. Z.sibling = black && Z.sibling.left = red && Z.sibling.right = black -> recolor Z.sibling && Z.sibling.left = black && rotate_right Z.sibling && Z.sibling = Z.parent.right
 				5. Z.sibling = black && Z.sibling.right = red -> recolor Z.sibling = Z.parent.color && Z.parent.color = black && Z.sibling.right.color = black && rotate_left Z.parent && Z = root
 		*/
+		void deletion_tree_fix(rb_node* Z) // From Z to _root
+		{
+			if (Z != NULL)
+			{
+				while (Z != this->_root && Z->color == BLACK) // scenario 1 is automatically handled
+				{
+					if (is_left_child(Z))
+					{
+						rb_node* S = sibling(Z);
+						if (S->color == RED) // scenario 2
+						{
+							S->color = BLACK;
+							parent(Z)->color = RED;
+							rotate_left(parent(Z));
+							S = parent(Z)->right;
+						}
+						if (S->left->color == BLACK && S->right->color == BLACK) // scenario 3
+						{
+							S->color = RED;
+							Z = parent(Z);
+						}
+						else // scenario 4 && 5
+						{
+							if (S->right->color == BLACK) // 4
+							{
+								S->left->color = BLACK;
+								S->color = RED;
+								rotate_right(S);
+								S = parent(Z)->right;
+							}
+							S->color = parent(Z)->color; // 5
+							parent(Z)->color = BLACK;
+							S->right->color = BLACK;
+							rotate_left(parent(Z));
+							Z = this->_root;
+						}
+					}
+					else // mirror scenarios
+					{
+						rb_node* S = sibling(Z);
+						if (S->color == RED) // 2
+						{
+							S->color = BLACK;
+							parent(Z)->color = RED;
+							rotate_right(parent(Z));
+							S = parent(Z)->left;
+						}
+						if (S->left->color == BLACK && S->right->color == BLACK) // 3
+						{
+							S->color = RED;
+							Z = parent(Z);
+						}
+						else // 4 && 5
+						{
+							if (S->left->color == BLACK) // 4
+							{
+								S->right->color = BLACK;
+								S->color = RED;
+								rotate_left(S);
+								S = parent(Z)->left;
+							}
+							S->color = parent(Z)->color; // 5
+							parent(Z)->color = BLACK;
+							S->left->color = BLACK;
+							rotate_right(parent(Z));
+							Z = this->_root;
+						}
+					}
+				}
+				Z->color = BLACK;
+			}
+		}
 		// ==================== Comparison ====================
 		bool inferior(const value_type& a, const value_type& b) const { return this->_comp(a, b); }
 		bool superior(const value_type& a, const value_type& b) const { return this->_comp(b, a); }
@@ -292,6 +367,12 @@ class RedBlackTree
 	public :
 		// ==================== Constructors ====================
 		RedBlackTree(const key_compare& compare = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _node_alloc(), _comp(compare), _root(NULL), _nil(NULL) { this->new_nil(); }
+		RedBlackTree(const RedBlackTree<T, Compare, Allocator>& rbt): _alloc(rbt._alloc), _node_alloc(rbt._node_alloc), _comp(rbt._comp), _root(NULL), _nil(NULL)
+		{
+			this->new_nil();
+			for (const_iterator it = rbt.begin(); it != rbt.end(); ++it)
+				this->insert(*it);
+		}
 		// ==================== Destructor ====================
 		~RedBlackTree()
 		{
@@ -318,7 +399,71 @@ class RedBlackTree
 				tmp = tmp->right;
 			return tmp;
 		}
-		// ==================== Modifiers ====================
+		iterator begin()
+		{
+			rb_node* tmp = this->first();
+			if (tmp != NULL)
+				return iterator(tmp);
+			return iterator(this->end());
+		}
+		const_iterator begin() const
+		{
+			rb_node* tmp = this->first();
+			if (tmp != NULL)
+				return const_iterator(tmp);
+			return const_iterator(this->end());
+		}
+		iterator end() { return iterator(this->_nil); }
+		const_iterator end() const { return const_iterator(this->_nil); }
+		// ==================== Modifiers =====================
+		/*
+			https://stackoverflow.com/questions/3381867/iterating-over-a-map
+			to iterate over a map we can :
+			- use the recursive implementation of the in-order traversal
+				1. simple
+				2. iterator would have to maintain a stack in order to be able to go back to the parent (keeping track of current node's path)
+			- use the iterative implementation of the in-order traversal
+				1. more complex
+				2. no need to maintain a stack (speed go brrrr)
+		*/
+		template <class Node>
+		static rb_node* successor_in_order(Node* current)
+		{
+			if (current == NULL)
+				return (NULL);
+			if (current->right != NULL) // node has right child -> traverse link to child then go left as far as we can (smallest value in right subtree)
+			{
+				current = current->right;
+				while (current->left != NULL)
+					current = current->left;
+			}
+			else // node is on the furthest right of it's subtree, up until find a left child node, successor is this node's parent
+			{
+				while (current->parent != NULL && current == current->parent->right)
+					current = current->parent;
+				current = current->parent;
+			}
+			return (current);
+		}
+		template <class Node>
+		static rb_node* predecessor_in_order(Node* current)
+		{
+			if (current == NULL)
+				return (NULL);
+			if (current->left != NULL)
+			{
+				current = current->left;
+				while (current->right != NULL)
+					current = current->right;
+			}
+			else
+			{
+				while (current->parent != NULL && current == current->parent->left)
+					current = current->parent;
+				current = current->parent;
+			}		
+			return (current);
+		}	
 		void swap(RedBlackTree<T, Compare, Allocator>& other)
 		{
 			std::swap(this->_root, other._root);
@@ -332,8 +477,27 @@ class RedBlackTree
 				std::cout << "Empty tree" << std::endl;
 			else
 				this->printBT("", this->_root, false);
+			std::cout << "======================" << std::endl;
 		}
-		void insert (const value_type& val)
+		rb_node* find(const value_type& val) const
+		{
+			if (this->equal(val, this->_root->data) || this->_root == NULL)
+				return this->_root;
+			rb_node* tmp = this->_root;
+			while (tmp != NULL)
+			{
+				if (this->equal(val, tmp->data))
+					return tmp;
+				else if (this->inferior(val, tmp->data))
+					tmp = tmp->left;
+				else
+					tmp = tmp->right;
+			}
+			if (tmp == this->_nil)
+				return NULL;
+			return tmp;
+		}
+		void insert(const value_type& val)
 		{
 			rb_node* Z = this->Z(val);
 			this->hide_nil();
@@ -366,7 +530,48 @@ class RedBlackTree
 			this->insertion_tree_fix(Z);
 			this->move_nil();
 		}
-		void remove(const T& value) { this->remove(this->find(value)); }
+		void remove(rb_node* node)
+		{
+			if (node != NULL)
+			{
+				this->hide_nil();
+				int color = node->color;
+				rb_node* tmp = NULL;
+				if (node->left == NULL || node->right == NULL) // max 1 child
+					this->switch_node(node, NULL);
+				else if (node->right == NULL) // only left child
+				{
+					tmp = node->left;
+					this->switch_node(node, tmp);
+				}
+				else if (node->left == NULL) // only right child
+				{
+					tmp = node->right;
+					this->switch_node(node, tmp);
+				}
+				else // 2 children
+				{
+					rb_node* successor = this->successor_in_order(node); // successor will replace node
+					color = successor->color;
+					tmp = successor->right;
+					if (successor->parent != node)
+					{
+						this->switch_node(successor, successor->right);
+						successor->right = node->right;
+						successor->right->parent = successor;
+					}
+					this->switch_node(node, successor);
+					successor->left = node->left;
+					successor->left->parent = successor;
+					successor->color = node->color;
+				}
+				this->delete_node(node);
+				if (color == BLACK)
+					this->deletion_tree_fix(tmp);
+				this->move_nil();
+			}
+		}
+		void remove(const T& val) { this->remove(this->find(val)); }
 		void clear()
 		{
 			this->clear_from_node(this->_root);
