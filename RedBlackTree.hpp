@@ -10,7 +10,8 @@
 #include <memory>
 #include <iostream>
 #include <iomanip>
-#include "MapIterator.hpp"\
+#include "MapIterator.hpp"
+#include "ReverseIterator.hpp"
 
 /*
 	RedBlackTree specificities:
@@ -27,13 +28,15 @@ template <class T, class Compare = std::less<T>, class Allocator = std::allocato
 class RedBlackTree
 {
 	public:
-		// ==================== Typedefs ====================
+	// ==================== Typedefs ====================
 		typedef T value_type;
 		typedef Allocator allocator_type;
 		typedef Compare key_compare;
 		typedef ft::MapIterator<RedBlackTree<T, Compare, Allocator>, false> iterator;
 		typedef ft::MapIterator<RedBlackTree<T, Compare, Allocator>, true> const_iterator;
-		// ==================== RedBlackTree node structure ====================
+		typedef ft::ReverseIterator<iterator> reverse_iterator;
+		typedef ft::ReverseIterator<const_iterator> const_reverse_iterator;
+	// ==================== RedBlackTree node structure ====================
 		struct rb_node
 		{
 			rb_node* parent;
@@ -52,7 +55,7 @@ class RedBlackTree
 		key_compare _comp;
 		rb_node* _root;
 		rb_node* _nil; // NIL node is used to represent the "End" of the tree (Not a real node)
-		// ==================== Private functions ====================
+	// ==================== Private functions ====================
 		rb_node* Z(const value_type& data = value_type())
 		{
 			rb_node* node = this->_node_alloc.allocate(1);
@@ -125,7 +128,7 @@ class RedBlackTree
 				printBT(prefix + (isLeft ? "|   " : "    "), node->left, false);
 			}
 		}
-		// ==================== RedBlackTree Rotations ====================
+	// ==================== RedBlackTree Rotations ====================
 		void rotate_right(rb_node* X)
 		{
 			rb_node* Y = X->left;
@@ -158,7 +161,7 @@ class RedBlackTree
 			Y->left = X;
 			X->parent = Y;
 		}
-		// ==================== Node family ====================
+	// ==================== Node family ====================
 		rb_node* parent(rb_node* node) const
 		{
 			if (node != NULL)
@@ -200,7 +203,7 @@ class RedBlackTree
 				return node == node->parent->right;
 			return false;
 		}
-		// ==================== RedBlackTree modifications ====================
+	// ==================== RedBlackTree modifications ====================
 		void recolor(rb_node* node)
 		{
 			if (node->color == BLACK)
@@ -379,8 +382,25 @@ class RedBlackTree
 			this->clear();
 			this->delete_node(this->_nil);
 		}
+		// ==================== (=) Operator ====================
+		RedBlackTree<T, Compare, Allocator>& operator=(const RedBlackTree<T, Compare, Allocator>& rbt)
+		{
+			if (this != &rbt)
+			{
+				this->clear();
+				this->_comp = rbt._comp;
+				this->_alloc = rbt._alloc;
+				this->_node_alloc = rbt._node_alloc;
+				this->_root = NULL;
+				this->new_nil();
+				for (const_iterator it = rbt.begin(); it != rbt.end(); ++it)
+					this->insert(*it);
+				this->move_nil;
+			}
+			return (*this);
+		}
 		// ==================== Accessors ====================
-		size_t max_size() const { return this->std::allocator<rb_node>.max_size(); }
+		size_t max_size() const { return _alloc.max_size(); }
 		const rb_node* getRoot() const { return this->_root; }
 		const rb_node* getNil() const { return this->_nil; }
 		size_t size() const	{ return this->size_from_node(this->_root); }
@@ -388,14 +408,14 @@ class RedBlackTree
 		rb_node* first() const
 		{
 			rb_node* tmp = this->_root;
-			while (tmp->left != this->_nil)
+			while (tmp != NULL && tmp->left != NULL)
 				tmp = tmp->left;
 			return tmp;
 		}
 		rb_node* last() const
 		{
 			rb_node* tmp = this->_root;
-			while (tmp->right != this->_nil)
+			while (tmp != NULL && tmp->right != NULL)
 				tmp = tmp->right;
 			return tmp;
 		}
@@ -415,6 +435,10 @@ class RedBlackTree
 		}
 		iterator end() { return iterator(this->_nil); }
 		const_iterator end() const { return const_iterator(this->_nil); }
+		reverse_iterator rbegin() { return reverse_iterator(this->end()); }
+		const_reverse_iterator rbegin() const { return const_reverse_iterator(this->end()); }
+		reverse_iterator rend() { return reverse_iterator(this->begin()); }
+		const_reverse_iterator rend() const { return const_reverse_iterator(this->begin()); }
 		// ==================== Modifiers =====================
 		/*
 			https://stackoverflow.com/questions/3381867/iterating-over-a-map
@@ -467,9 +491,10 @@ class RedBlackTree
 		void swap(RedBlackTree<T, Compare, Allocator>& other)
 		{
 			std::swap(this->_root, other._root);
-			std::swap(this->_size, other._size);
+			std::swap(this->_nil, other._nil);
 			std::swap(this->_comp, other._comp);
 			std::swap(this->_alloc, other._alloc);
+			std::swap(this->_node_alloc, other._node_alloc);
 		}
 		void print() const
 		{

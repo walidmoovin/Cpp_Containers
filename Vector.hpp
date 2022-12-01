@@ -12,7 +12,6 @@
 */
 namespace ft
 {
-	// ====================  Vector  ====================
 	template <class T, class Alloc = std::allocator<T> >
 	class vector
 	{
@@ -31,7 +30,7 @@ namespace ft
 			typedef ft::ReverseIterator<iterator> reverse_iterator;
 			typedef ft::ReverseIterator<const_iterator> const_reverse_iterator;
 
-			// ====================  Constructors  ====================
+		// ====================  Constructors  ====================
 			// Empty
 			explicit vector(const allocator_type &alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(0), _data(NULL){};
 			// Fill
@@ -58,13 +57,13 @@ namespace ft
 				clear();
 				_alloc.deallocate(_data, _capacity);
 			};
-			// ====================  Accessors  ====================
+		// ====================  Accessors  ====================
 			allocator_type get_allocator() const { return _alloc; };
 			size_t size() const { return _size; };
 			size_t max_size() const { return _alloc.max_size(); };
 			size_t capacity() const { return _capacity; };
 			bool empty() const { return _size == 0; };
-			// ==================== (=) Operator ====================
+		// ==================== (=) Operator ====================
 			vector &operator=(const vector &x)
 			{
 				if (this != &x)
@@ -81,7 +80,7 @@ namespace ft
 				}
 				return *this;
 			};
-			// ====================  Iterators  ====================
+		// ====================  Iterators  ====================
 			iterator begin() { return iterator(_data); };
 			const_iterator begin() const { return const_iterator(_data); };
 
@@ -93,7 +92,7 @@ namespace ft
 
 			reverse_iterator rend() { return reverse_iterator(_data); };
 			const_reverse_iterator rend() const { return const_reverse_iterator(_data); };
-			// ====================  Capacity  ====================
+		// ====================  Capacity  ====================
 			// Request a change in capacity
 			void reserve(size_t n)
 			{
@@ -126,7 +125,7 @@ namespace ft
 				}
 				_size = n;
 			};
-			// ====================  Element accerss  ====================
+		// ====================  Element accerss  ====================
 			// no check if out of range, undefined behavior. (faster)
 			reference operator[](size_t n) { return _data[n]; };
 			const_reference operator[](size_t n) const { return _data[n]; };
@@ -149,7 +148,7 @@ namespace ft
 			// Last element
 			reference back() { return _data[_size - 1]; };
 			const_reference back() const { return _data[_size - 1]; };
-			// ====================  Modifiers  ====================
+		// ====================  Modifiers  ====================
 			// Assign content (fill)
 			void assign(size_t n, const value_type &val)
 			{

@@ -13,7 +13,7 @@ namespace ft
 
 		first_type first;
 		second_type second;
-		// ==================== Constructors ====================
+	// ==================== Constructors ====================
 		// default
 		pair() : first(first_type()), second(second_type()) {}
 		// initialization
@@ -21,7 +21,7 @@ namespace ft
 		// copy
 		template<class U, class V>
 		pair(const pair<U, V>& pr) : first(pr.first), second(pr.second) {}
-		// ==================== (==) Operator ====================
+	// ==================== (==) Operator ====================
 		pair& operator=(const pair& pr)
 		{
 			if (this != &pr)

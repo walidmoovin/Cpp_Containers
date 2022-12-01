@@ -16,18 +16,18 @@ namespace ft
 			T* _ptr;
 			typedef typename ft::iterator<ft::random_access_iterator_tag, typename ft::choose<isConst, const T, T>::type> it;																														
 		public:
-			// ==================== Constructors ====================
+		// ==================== Constructors ====================
 			VectorIterator(T* ptr) : _ptr(ptr) {}
 			VectorIterator() : _ptr(NULL) {}
 			VectorIterator(const VectorIterator<T, isConst>& other) : _ptr(other._ptr) {}
-			// ==================== Destructors ====================
+		// ==================== Destructors ====================
 			~VectorIterator() {}
-			// ===================== Non-const -> const conversion ====================
+		// ===================== Non-const -> const conversion ====================
 			operator VectorIterator<T, true>() const
 			{
 				return VectorIterator<T, true>(this->_ptr);
 			}
-			// ==================== (=) Operator ====================
+		// ==================== (=) Operator ====================
 			VectorIterator<T, isConst>& operator=(const VectorIterator& other)
 			{
 				this->_ptr = other._ptr;
@@ -101,7 +101,7 @@ namespace ft
 			{
 				return (this->_ptr - other._ptr);
 			}
-			// ==================== Friend operators (allow const and non-const in operators) (just prototype here, functions outside of the class) ====================
+		// ==================== Friend operators (allow const and non-const in operators) (just prototype here, functions outside of the class) ====================
 			template <typename Y, bool isConstFriend>
 			friend VectorIterator<Y, isConstFriend> operator+(std::size_t n, const VectorIterator<Y, isConstFriend>& other);
 			template <class Iterator, class OtherIterator>
