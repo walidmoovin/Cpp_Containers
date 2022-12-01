@@ -1,5 +1,5 @@
 NAME= ft_containers
-SRCS= main.cpp
+SRCS= mainmap.cpp
 OBJS= $(SRCS:.cpp=.o)
 CXX=c++
 CXXFLAGS= -Werror -Wextra -Wall -std=c++98 

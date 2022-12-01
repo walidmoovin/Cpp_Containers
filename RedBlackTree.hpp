@@ -12,6 +12,7 @@
 #include <iomanip>
 #include "MapIterator.hpp"
 #include "ReverseIterator.hpp"
+#include <functional>
 
 /*
 	RedBlackTree specificities:
@@ -31,7 +32,7 @@ class RedBlackTree
 	// ==================== Typedefs ====================
 		typedef T value_type;
 		typedef Allocator allocator_type;
-		typedef Compare key_compare;
+		typedef Compare data_compare;
 		typedef ft::MapIterator<RedBlackTree<T, Compare, Allocator>, false> iterator;
 		typedef ft::MapIterator<RedBlackTree<T, Compare, Allocator>, true> const_iterator;
 		typedef ft::ReverseIterator<iterator> reverse_iterator;
@@ -52,7 +53,7 @@ class RedBlackTree
 	private:
 		allocator_type _alloc;
 		std::allocator<rb_node> _node_alloc;
-		key_compare _comp;
+		data_compare _comp;
 		rb_node* _root;
 		rb_node* _nil; // NIL node is used to represent the "End" of the tree (Not a real node)
 	// ==================== Private functions ====================
@@ -369,7 +370,7 @@ class RedBlackTree
 		bool equal(const value_type& a, const value_type& b) const { return (!this->_comp(a, b) && !this->_comp(b, a)); }
 	public :
 		// ==================== Constructors ====================
-		RedBlackTree(const key_compare& compare = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _node_alloc(), _comp(compare), _root(NULL), _nil(NULL) { this->new_nil(); }
+		RedBlackTree(const data_compare& compare = data_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _node_alloc(), _comp(compare), _root(NULL), _nil(NULL) { this->new_nil(); }
 		RedBlackTree(const RedBlackTree<T, Compare, Allocator>& rbt): _alloc(rbt._alloc), _node_alloc(rbt._node_alloc), _comp(rbt._comp), _root(NULL), _nil(NULL)
 		{
 			this->new_nil();
@@ -395,12 +396,12 @@ class RedBlackTree
 				this->new_nil();
 				for (const_iterator it = rbt.begin(); it != rbt.end(); ++it)
 					this->insert(*it);
-				this->move_nil;
+				this->move_nil();
 			}
 			return (*this);
 		}
 		// ==================== Accessors ====================
-		size_t max_size() const { return _alloc.max_size(); }
+		size_t max_size() const { return _node_alloc.max_size(); }
 		const rb_node* getRoot() const { return this->_root; }
 		const rb_node* getNil() const { return this->_nil; }
 		size_t size() const	{ return this->size_from_node(this->_root); }
@@ -522,7 +523,7 @@ class RedBlackTree
 				return NULL;
 			return tmp;
 		}
-		void insert(const value_type& val)
+		bool insert(const value_type& val)
 		{
 			rb_node* Z = this->Z(val);
 			this->hide_nil();
@@ -531,7 +532,7 @@ class RedBlackTree
 				Z->color = BLACK;
 				this->_root = Z;
 				this->move_nil();
-				return;
+				return true;
 			}
 			rb_node* tmp = this->_root;
 			rb_node* parent = NULL;
@@ -539,7 +540,7 @@ class RedBlackTree
 			{
 				parent = tmp;
 				if (this->equal(val, tmp->data)) // (map has unique keys -> no duplicates)
-					return;
+					return false;
 				else if (this->inferior(val, tmp->data))
 					tmp = tmp->left;
 				else
@@ -554,6 +555,7 @@ class RedBlackTree
 				parent->right = Z;
 			this->insertion_tree_fix(Z);
 			this->move_nil();
+			return true;
 		}
 		void remove(rb_node* node)
 		{

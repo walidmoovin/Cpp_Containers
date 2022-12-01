@@ -15,8 +15,7 @@ namespace ft
 			typename RedBlackTree::rb_node* _ptr;
 		public:
 		// ==================== Constructors ====================
-			MapIterator() : _ptr(NULL) {}
-			MapIterator(typename RedBlackTree::rb_node* ptr) : _ptr(ptr) {}
+			MapIterator(typename RedBlackTree::rb_node* ptr = NULL) : _ptr(ptr) {}
 			MapIterator(const MapIterator<RedBlackTree, isConst>& other) : _ptr(other._ptr) {}
 		// ==================== Destructors ====================
 			~MapIterator() {}
@@ -52,22 +51,22 @@ namespace ft
 		// ==================== (--it) Operator ====================
 			MapIterator<RedBlackTree, isConst>& operator--()
 			{
-				if (RedBlackTree::predecessor_in_order(this->_node) == NULL)
+				if (RedBlackTree::predecessor_in_order(this->_ptr) == NULL)
 					return (*this);
-				this->_node = RedBlackTree::predecessor_in_order(this->_node);
+				this->_ptr = RedBlackTree::predecessor_in_order(this->_ptr);
 				return (*this);
 			}
 		// ==================== (it++) Operator ====================	
 			MapIterator<RedBlackTree, isConst> operator++(int)
 			{
-				MapIterator<RedBlackTree, isConst> tmp(*this);
+				MapIterator<RedBlackTree, isConst> tmp = *this;
 				++(*this);
 				return (tmp);
 			}		
 		// ==================== (it--) Operator ====================
 			MapIterator<RedBlackTree, isConst> operator--(int)
 			{
-				MapIterator<RedBlackTree, isConst> tmp(*this);
+				MapIterator<RedBlackTree, isConst> tmp = *this;
 				--(*this);
 				return (tmp);
 			}

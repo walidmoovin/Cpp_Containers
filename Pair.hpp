@@ -21,16 +21,6 @@ namespace ft
 		// copy
 		template<class U, class V>
 		pair(const pair<U, V>& pr) : first(pr.first), second(pr.second) {}
-	// ==================== (==) Operator ====================
-		pair& operator=(const pair& pr)
-		{
-			if (this != &pr)
-			{
-				first = pr.first;
-				second = pr.second;
-			}
-			return *this;
-		}
 	};
 	// ==================== Relational operators ====================
 	template <class T1, class T2>
@@ -65,7 +55,7 @@ namespace ft
 	}
 	// ==================== Make pair ====================
 	template <class T1, class T2>
-	pair<T1, T2> make_pair(T1 x, T2 y)
+	ft::pair<T1, T2> make_pair(T1 x, T2 y)
 	{
 		return (pair<T1, T2>(x, y));
 	}
