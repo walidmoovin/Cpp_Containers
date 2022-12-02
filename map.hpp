@@ -50,9 +50,9 @@ namespace ft
 			key_compare _comp;
 			allocator_type _alloc;
 			_redblacktree _tree;
-			bool inferior(value_type const &lhs, value_type const &rhs) const { return this->_comp(lhs, rhs); }
-			bool equal(value_type const &lhs, value_type const &rhs) const { return !this->_comp(lhs, rhs) && !this->_comp(rhs, lhs); }
-			bool superior(value_type const &lhs, value_type const &rhs) const { return this->_comp(rhs, lhs); }
+			bool inferior(key_type const &lhs, key_type const &rhs) const { return this->_comp(lhs, rhs); }
+			bool equal(key_type const &lhs, key_type const &rhs) const { return !this->_comp(lhs, rhs) && !this->_comp(rhs, lhs); }
+			bool superior(key_type const &lhs, key_type const &rhs) const { return this->_comp(rhs, lhs); }
 		public:
 		// ==================== Constructors / Destructor ====================
 			explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type()): _comp(comp), _alloc(alloc), _tree() { }
