@@ -57,7 +57,7 @@ class RedBlackTree
 		rb_node* _root;
 		rb_node* _nil; // NIL node is used to represent the "End" of the tree (Not a real node)
 	// ==================== Private functions ====================
-		rb_node* Z(const value_type& data = value_type())
+		rb_node* create_node(const value_type& data = value_type())
 		{
 			rb_node* node = this->_node_alloc.allocate(1);
 			this->_alloc.construct(&(node->data), data);
@@ -80,7 +80,7 @@ class RedBlackTree
 		}
 		void new_nil()
 		{
-			this->_nil = this->Z();
+			this->_nil = this->create_node();
 			this->_nil->color = NIL;
 		}
 		// Moves NIL node to end of the tree
@@ -525,7 +525,7 @@ class RedBlackTree
 		}
 		bool insert(const value_type& val)
 		{
-			rb_node* Z = this->Z(val);
+			rb_node* Z = this->create_node(val);
 			this->hide_nil();
 			if (this->_root == NULL) // empty tree
 			{
@@ -539,9 +539,12 @@ class RedBlackTree
 			while (tmp != NULL)
 			{
 				parent = tmp;
-				if (this->equal(val, tmp->data)) // (map has unique keys -> no duplicates)
+				if (this->equal(Z->data, tmp->data))
+				{ // (map has unique keys -> no duplicates)
+					this->move_nil();
 					return false;
-				else if (this->inferior(val, tmp->data))
+				}
+				else if (this->inferior(Z->data, tmp->data))
 					tmp = tmp->left;
 				else
 					tmp = tmp->right;
@@ -549,7 +552,7 @@ class RedBlackTree
 			// relation kid -> parent
 			Z->parent = parent;
 			// relation parent -> kid
-			if (this->inferior(val, parent->data))
+			if (this->inferior(Z->data, parent->data))
 				parent->left = Z;
 			else
 				parent->right = Z;
@@ -564,17 +567,17 @@ class RedBlackTree
 				this->hide_nil();
 				int color = node->color;
 				rb_node* tmp = NULL;
-				if (node->left == NULL || node->right == NULL) // max 1 child
+				if (node->left == NULL && node->right == NULL) // max 1 child
 					this->switch_node(node, NULL);
 				else if (node->right == NULL) // only left child
 				{
 					tmp = node->left;
-					this->switch_node(node, tmp);
+					this->switch_node(node, node->left);
 				}
 				else if (node->left == NULL) // only right child
 				{
 					tmp = node->right;
-					this->switch_node(node, tmp);
+					this->switch_node(node, node->right);
 				}
 				else // 2 children
 				{

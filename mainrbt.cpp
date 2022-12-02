@@ -14,16 +14,16 @@ int main(void)
 		tree.insert(num);
 		std::cout << "insert " << num << "\n\n";
 		tree.print();
-		// 1/2 chance to remove the number
-		// std::cout << "- 50 % chance to remove " << num << "\n\n";
-		// if (dis(gen) % 2 == 0)
-		// {
-		// 	tree.remove(num);
-		// 	std::cout << "!!! remove " << num << "\n\n";
-		// 	tree.print();
-		// }
-		// else
-		// 	std::cout << "!!! no remove" << "\n\n";
+		1/2 chance to remove the number
+		std::cout << "- 50 % chance to remove " << num << "\n\n";
+		if (dis(gen) % 2 == 0)
+		{
+			tree.remove(num);
+			std::cout << "!!! remove " << num << "\n\n";
+			tree.print();
+		}
+		else
+			std::cout << "!!! no remove" << "\n\n";
 		std::cout << "|| END ||" << std::endl;
 	}
 	RedBlackTree<int> tree1(tree);
