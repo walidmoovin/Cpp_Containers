@@ -4,6 +4,7 @@
 #pragma once
 #include "VectorIterator.hpp"
 #include "ReverseIterator.hpp"
+#include <memory>
 
 /* vector specificities:
 	- Sequence (ordered)

@@ -3,6 +3,7 @@
 
 #pragma once
 #include "vector.hpp"
+#include <memory>
 
 // stack is just a cringe way to use vector, don't use it please it's bad
 namespace ft
