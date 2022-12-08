@@ -1,6 +1,6 @@
 # Cpp_Containers 📦
 
-Re-implementation of some containers types of C++ Standard Template Library.
+Re-implementation of some containers types of C++ Standard Template Library. (VECTOR / MAP / SET)
 
 Taking the structure of each standard container as a reference
 
